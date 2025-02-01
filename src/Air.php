@@ -9,5 +9,18 @@ class Air extends IlmComm
         return $this->http->get($path)->body();
     }
 
-    // public function 
+    public function post(string $path, array $payload)
+    {
+        return $this->http->post($path, $payload)->body();
+    }
+
+    public function put(string $path, array $payload)
+    {
+        return $this->http->put($path, $payload)->body();
+    }
+
+    public function delete(string $path)
+    {
+        return $this->http->delete($path)->body();
+    }
 }

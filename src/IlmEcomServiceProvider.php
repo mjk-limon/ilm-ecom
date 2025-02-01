@@ -16,7 +16,6 @@ class IlmEcomServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('ilm-ecom')
-            ->hasConfigFile()
-            ->hasMigration('create_ilm_ecom_table');
+            ->hasConfigFile();
     }
 }
