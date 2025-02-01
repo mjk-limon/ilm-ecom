@@ -14,6 +14,7 @@ class IlmEcomServiceProvider extends PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
          */
+        // $this->app->bind('ilm-ecom', function () {});
         $package
             ->name('ilm-ecom')
             ->hasConfigFile();
