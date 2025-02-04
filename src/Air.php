@@ -2,25 +2,38 @@
 
 namespace Ilm\Ecom;
 
+use BadMethodCallException;
+use Ilm\Ecom\Traits\HasErrors;
+use Ilm\Ecom\Traits\Modulable;
+
+/**
+ * @method \Illuminate\Http\Client\Response get(string $url, $query = null)
+ * @method \Illuminate\Http\Client\Response post(string $url, $data = [])
+ * @method \Illuminate\Http\Client\Response put(string $url, $data = [])
+ * @method \Illuminate\Http\Client\Response delete(string $url, $data = [])
+ */
 class Air extends IlmComm
 {
-    public function get(string $path)
+    use Modulable,
+        HasErrors;
+
+    public function __call($name, $arguments)
     {
-        return $this->http->get($path)->body();
+        if (in_array($name, ['get', 'post', 'put', 'delete'])) {
+            return $this->request($name, array_shift($arguments), $arguments);
+        }
+
+        throw new BadMethodCallException;
     }
 
-    public function post(string $path, array $payload)
+    private function request(string $method, string $path, array $args)
     {
-        return $this->http->post($path, $payload)->body();
+        $http = $this->authorizedHttp();
+        return $http->{$method}($path, ...$args);
     }
 
-    public function put(string $path, array $payload)
+    public function error($error, $rt = HasErrors::ERROR_RETURN_JSON)
     {
-        return $this->http->put($path, $payload)->body();
-    }
-
-    public function delete(string $path)
-    {
-        return $this->http->delete($path)->body();
+        return $this->setErrors($error)->generateErrorResponse($rt);
     }
 }

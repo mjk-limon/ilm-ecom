@@ -5,33 +5,59 @@ namespace Ilm\Ecom;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Ilm\Ecom\Exceptions\GeneralException;
+use Ilm\Ecom\Services\CacheService;
+use Ilm\Ecom\Services\HttpService;
 
 abstract class IlmComm
 {
-    protected $http;
+    /**
+     * @var Services\HttpService|\Illuminate\Http\Client\PendingRequest
+     */
+    private $http;
 
-    abstract public function get(string $path);
+    /**
+     * @var \Illuminate\Cache\CacheManager|\Illuminate\Contracts\Cache\Repository
+     */
+    private $cache;
 
-    public function __construct()
+    protected function cache()
     {
-        $this->http = Http::asMultipart();
-
-        if (config('ilm-ecom.sandbox')) {
-            $this->http->withoutVerifying();
-            $this->http->baseUrl(config('ilm-ecom.sandbox-url'));
-        } else {
-            $this->http->baseUrl(config('ilm-ecom.url'));
+        if (!$this->cache) {
+            $this->cache = app('cache');
         }
 
-        if ($accessToken = Cache::get('ilm_access_token')) {
-            $this->http->withToken($accessToken);
-            return;
-        }
-
-        $this->attemptLogin();
+        return $this->cache;
     }
 
-    public function attemptLogin()
+    protected function http()
+    {
+        if (!$this->http) {
+            $this->http = new HttpService;
+            $this->http->asMultipart();
+
+            if (config('ilm-ecom.sandbox')) {
+                $this->http->withoutVerifying();
+                $this->http->baseUrl(config('ilm-ecom.sandbox-url'));
+            } else {
+                $this->http->baseUrl(config('ilm-ecom.url'));
+            }
+        }
+
+        return $this->http;
+    }
+
+    protected function authorizedHttp()
+    {
+        $http = $this->http();
+
+        if ($accessToken = Cache::get('ilm_access_token')) {
+            $http->withToken($accessToken);
+        } else {
+            $this->attemptLogin($http);
+        }
+    }
+
+    private function attemptLogin(&$http)
     {
         $clientId = config('ilm-ecom.client-id');
         $clientSecret = config('ilm-ecom.client-secret');
@@ -46,14 +72,14 @@ abstract class IlmComm
             'client_secret' => $clientSecret,
         ];
 
-        $request = $this->http->post('/oauth/token', $payload);
+        $request = $http->post('/oauth/token', $payload);
 
         if ($request->status() === 200) {
             $response = $request->body();
 
-            if ($accessToken = $response['accessToken'] ?? null) {
-                $this->http->withToken($accessToken);
-                return true;
+            if ($accessToken = $response['access_token'] ?? null) {
+                $http->withToken($accessToken);
+                return $accessToken;
             }
 
             throw GeneralException::make(GeneralException::CLIENT_CREDENTIALS_ERROR);
