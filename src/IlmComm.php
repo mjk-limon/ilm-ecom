@@ -48,16 +48,18 @@ abstract class IlmComm
 
     protected function authorizedHttp()
     {
-        $http = $this->http();
+        $http = clone $this->http();
 
         if ($accessToken = Cache::get('ilm_access_token')) {
             $http->withToken($accessToken);
         } else {
             $this->attemptLogin($http);
         }
+
+        return $http;
     }
 
-    private function attemptLogin(&$http)
+    private function attemptLogin($http)
     {
         $clientId = config('ilm-ecom.client-id');
         $clientSecret = config('ilm-ecom.client-secret');
