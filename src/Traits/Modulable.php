@@ -2,11 +2,12 @@
 
 namespace Ilm\Ecom\Traits;
 
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Client\PendingRequest;
 
 trait Modulable
 {
     protected $moduleName;
+
     protected $cachePrefix;
 
     public function setModuleName(null|string $name)
@@ -21,17 +22,12 @@ trait Modulable
         return $this;
     }
 
-    protected function getModuleApiEndpoint(string $path)
+    protected function httpAppendModuleUri(PendingRequest $http)
     {
-        $base = !config('ilm-ecom.sandbox')
-            ? config('ilm-ecom.url')
-            : config('ilm-ecom.sandbox-url');
+        $moduleUri = sprintf('%s/api/%s', rtrim($this->httpBaseUrl, '/'), ltrim($this->moduleName, '/'));
 
-        return sprintf('%s/api/v1/%s/%s', rtrim($base, '/'), $this->moduleName, ltrim($path, '/'));
-    }
-
-    protected function getCachedData($key)
-    {
-        return Cache::get($this->cachePrefix . '_' . $key);
+        $http->baseUrl(
+            $this->httpBaseUrl = $moduleUri
+        );
     }
 }

@@ -17,6 +17,8 @@ abstract class IlmComm
      */
     private $cache;
 
+    protected $httpBaseUrl;
+
     protected function cache()
     {
         if (!$this->cache) {
@@ -46,9 +48,14 @@ abstract class IlmComm
 
             if (config('ilm-ecom.sandbox')) {
                 $this->http->withoutVerifying();
-                $this->http->baseUrl(config('ilm-ecom.sandbox-url'));
+
+                $this->http->baseUrl(
+                    $this->httpBaseUrl = config('ilm-ecom.sandbox-url')
+                );
             } else {
-                $this->http->baseUrl(config('ilm-ecom.url'));
+                $this->http->baseUrl(
+                    $this->httpBaseUrl = config('ilm-ecom.url')
+                );
             }
         }
 

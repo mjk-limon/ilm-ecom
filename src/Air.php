@@ -33,6 +33,7 @@ class Air extends IlmComm
         }
 
         $http = $this->authorizedHttp();
+        $this->httpAppendModuleUri($http);
         return $http->{$method}($path, ...$args);
     }
 
