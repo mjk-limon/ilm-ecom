@@ -28,6 +28,10 @@ class Air extends IlmComm
 
     private function request(string $method, string $path, array $args)
     {
+        if ($cached = $this->cached($method, $path, $args, $this->cachePrefix)) {
+            return $cached;
+        }
+
         $http = $this->authorizedHttp();
         return $http->{$method}($path, ...$args);
     }
