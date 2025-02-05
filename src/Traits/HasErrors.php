@@ -7,6 +7,7 @@ use Exception;
 trait HasErrors
 {
     const ERROR_RETURN_JSON = 1;
+
     const ERROR_RETURN_ARRAY = 2;
 
     protected $errors = [];
@@ -14,6 +15,7 @@ trait HasErrors
     public function setErrors($error)
     {
         $this->errors = $error;
+
         return $this;
     }
 

@@ -10,15 +10,17 @@ trait Modulable
 
     protected $cachePrefix;
 
-    public function setModuleName(null|string $name)
+    public function setModuleName(?string $name)
     {
         $this->moduleName = $name;
+
         return $this;
     }
 
     public function setCachePrefix(string $prefix)
     {
         $this->cachePrefix = $prefix;
+
         return $this;
     }
 

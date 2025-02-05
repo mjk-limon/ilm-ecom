@@ -14,8 +14,8 @@ use Ilm\Ecom\Traits\Modulable;
  */
 class Air extends IlmComm
 {
-    use Modulable,
-        HasErrors;
+    use HasErrors,
+        Modulable;
 
     public function __call($name, $arguments)
     {
@@ -34,6 +34,7 @@ class Air extends IlmComm
 
         $http = $this->authorizedHttp();
         $this->httpAppendModuleUri($http);
+
         return $http->{$method}($path, ...$args);
     }
 

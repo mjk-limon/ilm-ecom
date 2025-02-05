@@ -5,6 +5,7 @@ namespace Ilm\Ecom\Exceptions;
 class GeneralException extends IlmException
 {
     const CLIENT_NOT_FOUND = 0x101;
+
     const CLIENT_CREDENTIALS_ERROR = 0x102;
 
     const HTTP_REQUEST_ERROR = 0x201;
@@ -18,7 +19,7 @@ class GeneralException extends IlmException
     public function __construct(int $code)
     {
         parent::__construct(
-            'General Error. ' . $this->msg[$code] ?? '',
+            'General Error. '.$this->msg[$code] ?? '',
             $code
         );
     }

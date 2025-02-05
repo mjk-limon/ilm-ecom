@@ -4,7 +4,7 @@ namespace Ilm\Ecom\Services;
 
 use Illuminate\Http\Request;
 
-abstract class ResouceController extends Controller
+abstract class ResourceController extends Controller
 {
     /**
      * Display a listing of the resource.
