@@ -26,6 +26,19 @@ abstract class IlmComm
         return $this->cache;
     }
 
+    protected function cached(string $method, string $path, array $args, string $cahcePrefix = null)
+    {
+        if ($method != 'get') {
+            return false;
+        }
+
+        $query = current($args);
+        $queryString = $query && !is_string($query) ? http_build_query($query) : strval($query);
+        $key = sprintf('%s%s_%s', $cahcePrefix ? $cahcePrefix . '_' : '', $path, $queryString);
+
+        return $this->cache()->get(md5($key));
+    }
+
     protected function http()
     {
         if (!$this->http) {
