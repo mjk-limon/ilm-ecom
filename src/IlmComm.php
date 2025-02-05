@@ -2,16 +2,13 @@
 
 namespace Ilm\Ecom;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Ilm\Ecom\Exceptions\GeneralException;
-use Ilm\Ecom\Services\CacheService;
-use Ilm\Ecom\Services\HttpService;
 
 abstract class IlmComm
 {
     /**
-     * @var Services\HttpService|\Illuminate\Http\Client\PendingRequest
+     * @var \Illuminate\Http\Client\PendingRequest
      */
     private $http;
 
@@ -32,8 +29,7 @@ abstract class IlmComm
     protected function http()
     {
         if (!$this->http) {
-            $this->http = new HttpService;
-            $this->http->asMultipart();
+            $this->http = Http::asMultipart();
 
             if (config('ilm-ecom.sandbox')) {
                 $this->http->withoutVerifying();
@@ -50,7 +46,7 @@ abstract class IlmComm
     {
         $http = clone $this->http();
 
-        if ($accessToken = Cache::get('ilm_access_token')) {
+        if ($accessToken = $this->cache()->get('ilm_access_token')) {
             $http->withToken($accessToken);
         } else {
             $this->attemptLogin($http);
@@ -77,10 +73,12 @@ abstract class IlmComm
         $request = $http->post('/oauth/token', $payload);
 
         if ($request->status() === 200) {
-            $response = $request->body();
+            $response = $request->json();
 
             if ($accessToken = $response['access_token'] ?? null) {
                 $http->withToken($accessToken);
+
+                $this->cache()->set('ilm_access_token', $accessToken, $response['expires_in']);
                 return $accessToken;
             }
 
