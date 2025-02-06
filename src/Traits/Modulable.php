@@ -26,7 +26,12 @@ trait Modulable
 
     protected function httpAppendModuleUri(PendingRequest $http)
     {
-        $moduleUri = sprintf('%s/api/%s', rtrim($this->httpBaseUrl, '/'), ltrim($this->moduleName, '/'));
+        $moduleUri = sprintf(
+            '%s/api/%s/%s',
+            rtrim($this->httpBaseUrl, '/'),
+            $this->version,
+            ltrim($this->moduleName, '/')
+        );
 
         $http->baseUrl(
             $this->httpBaseUrl = $moduleUri

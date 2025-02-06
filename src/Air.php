@@ -17,6 +17,8 @@ class Air extends IlmComm
     use HasErrors,
         Modulable;
 
+    public $version = 'v1';
+
     public function __call($name, $arguments)
     {
         if (in_array($name, ['get', 'post', 'put', 'delete'])) {
@@ -38,7 +40,7 @@ class Air extends IlmComm
         return $http->{$method}($path, ...$args);
     }
 
-    public function error($error, $rt = HasErrors::ERROR_RETURN_JSON)
+    public function error($error, $rt = self::ERROR_RETURN_JSON)
     {
         return $this->setErrors($error)->generateErrorResponse($rt);
     }

@@ -97,7 +97,6 @@ abstract class IlmComm
 
             if ($accessToken = $response['access_token'] ?? null) {
                 $http->withToken($accessToken);
-
                 $this->cache()->set('ilm_access_token', $accessToken, $response['expires_in']);
 
                 return $accessToken;
