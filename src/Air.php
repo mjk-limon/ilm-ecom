@@ -3,8 +3,8 @@
 namespace Ilm\Ecom;
 
 use BadMethodCallException;
-use Ilm\Ecom\Traits\HasErrors;
 use Ilm\Ecom\Traits\Modulable;
+use Ilm\Ecom\Traits\ResponseTrait;
 
 /**
  * @method \Illuminate\Http\Client\Response get(string $url, $query = null)
@@ -14,7 +14,7 @@ use Ilm\Ecom\Traits\Modulable;
  */
 class Air extends IlmComm
 {
-    use HasErrors,
+    use ResponseTrait,
         Modulable;
 
     public $version = 'v1';
@@ -38,6 +38,11 @@ class Air extends IlmComm
         $this->httpAppendModuleUri($http);
 
         return $http->{$method}($path, ...$args);
+    }
+
+    public function response($response)
+    {
+        $this->setResponse($response)->generateResponse();
     }
 
     public function error($error, $rt = self::ERROR_RETURN_JSON)
