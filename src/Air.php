@@ -47,8 +47,8 @@ class Air extends IlmComm
             ->generateResponse();
     }
 
-    public function error($error, $rt = self::ERROR_RETURN_JSON)
+    public function error($error)
     {
-        return $this->setErrors($error)->generateErrorResponse($rt);
+        return $this->setErrors($error)->generateErrorResponse();
     }
 }

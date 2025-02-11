@@ -17,7 +17,7 @@ abstract class ResourceController extends Controller
             return $this->app->error($e);
         }
 
-        return $this->app->response('index', '[]');
+        return $this->app->response('index', $response);
     }
 
     /**

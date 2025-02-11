@@ -9,6 +9,7 @@ it('can test application', function () {
     Config::set('ilm-ecom.client-secret', 'jr0aDtt9JW4ZxeYJqMTs1R134NxjIvuL4VHm7fsG');
 
     Air::$defaultResponseProvider = function ($r, $rc) {
+        expect($r)->toBe('accounts/opening-balances/index');
         return $rc;
     };
 

@@ -23,10 +23,16 @@ abstract class Controller extends BaseController
     ) {
         $app->setModuleName($this->moduleName())
             ->setCachePrefix($this->cacheKey ?: $this->moduleName())
+            ->setResponseProvider($this->responseProvider())
             ->setResponseOptions([
                 'module' => $this->moduleName(),
                 'customs' => $this->customResponses(),
             ]);
+    }
+
+    protected function responseProvider(): ?\Closure
+    {
+        return null;
     }
 
     protected function customResponses(): ?array

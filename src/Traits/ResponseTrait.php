@@ -7,10 +7,6 @@ use Exception;
 
 trait ResponseTrait
 {
-    const ERROR_RETURN_JSON = 1;
-
-    const ERROR_RETURN_ARRAY = 2;
-
     protected $responseFile;
 
     protected $responseData;
@@ -21,7 +17,7 @@ trait ResponseTrait
 
     protected $responseOptions;
 
-    protected $errors = [];
+    protected $errors;
 
     protected function setResponseFile($file)
     {
@@ -60,12 +56,12 @@ trait ResponseTrait
 
     private function getResponseProvider()
     {
-        if (self::$defaultResponseProvider) {
-            return self::$defaultResponseProvider;
-        }
-
         if ($this->responseProvider) {
             return $this->responseProvider;
+        }
+
+        if (self::$defaultResponseProvider) {
+            return self::$defaultResponseProvider;
         }
 
         return Closure::fromCallable(function ($blade, $data) {
@@ -97,18 +93,23 @@ trait ResponseTrait
         return $provider($file, $this->responseData);
     }
 
-    protected function generateErrorResponse(int $returnType = self::ERROR_RETURN_JSON)
+    protected function generateErrorResponse()
     {
         $errors = $this->errors;
 
+        $this->responseFile = 'error';
+
         if ($errors instanceof Exception) {
+            $this->responseFile = $errors->getCode();
             $errors = ['error' => $errors->getCode(), 'hint' => $errors->getMessage()];
         }
 
-        $errors = $errors + ['success' => false, 'error' => 0, 'hint' => ''];
+        if (!is_array($errors)) {
+            $errors = ['hint' => $errors];
+        }
 
-        return $returnType === self::ERROR_RETURN_JSON
-            ? json_encode($errors, JSON_PRETTY_PRINT)
-            : $errors;
+        $this->responseData = $errors + ['success' => false, 'error' => 0, 'hint' => ''];
+
+        return $this->generateResponse(['module' => 'errors']);
     }
 }
