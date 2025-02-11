@@ -16,7 +16,7 @@ abstract class Controller extends BaseController
 
     protected $cacheKey;
 
-    abstract public function moduleName(): ?string;
+    abstract protected function moduleName(): ?string;
 
     public function __construct(
         protected Air $app
