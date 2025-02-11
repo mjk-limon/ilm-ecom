@@ -40,7 +40,7 @@ trait ResponseTrait
         return $this;
     }
 
-    public function setResponseProvider(Closure $provider)
+    public function setResponseProvider(?Closure $provider)
     {
         $this->responseProvider = $provider;
 
