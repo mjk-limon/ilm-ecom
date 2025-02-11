@@ -31,5 +31,5 @@ it('can test application', function () {
 
 
     $response = $controller->index();
-    expect($response)->toBeArray();
+    expect($response)->toBeJson();
 });
