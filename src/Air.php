@@ -40,9 +40,12 @@ class Air extends IlmComm
         return $http->{$method}($path, ...$args);
     }
 
-    public function response($response)
+    public function response($file, $data = [], $responseOptions)
     {
-        $this->setResponse($response)->generateResponse();
+        return $this->setResponseFile($file)
+            ->setResponseData($data)
+            ->setResponseOptions($responseOptions)
+            ->generateResponse();
     }
 
     public function error($error, $rt = self::ERROR_RETURN_JSON)

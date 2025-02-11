@@ -17,21 +17,21 @@ abstract class ResourceController extends Controller
             return $this->app->error($e);
         }
 
-        return $this->app->response($response);
+        return $this->app->response('index', '[]', $this->responseOptions());
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function form()
     {
-        //
+        return $this->app->response('form', '[]', $this->responseOptions());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function upsert(Request $request)
     {
         //
     }
@@ -45,26 +45,29 @@ abstract class ResourceController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Default Response files
+     *
+     * @return array|null
+     */
+    protected function responseOptions(): ?array
+    {
+        $module = $this->moduleName();
+
+        return [
+            'module' => $module,
+            'defaults' => [
+                'index' => 'index',
+                'form' => 'form',
+            ],
+            'customs' => [],
+        ];
     }
 }

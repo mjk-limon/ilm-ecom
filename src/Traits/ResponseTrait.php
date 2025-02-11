@@ -2,6 +2,7 @@
 
 namespace Ilm\Ecom\Traits;
 
+use Closure;
 use Exception;
 
 trait ResponseTrait
@@ -10,20 +11,28 @@ trait ResponseTrait
 
     const ERROR_RETURN_ARRAY = 2;
 
+    protected $responseFile;
+
+    protected $responseData;
+
+    public static $defaultResponseProvider;
+
     protected $responseProvider;
 
-    protected $response;
+    protected $responseOptions;
 
     protected $errors = [];
 
-    public function setResponseProvider(string $provider)
+    protected function setResponseFile($file)
     {
-        $this->responseProvider = $provider;
+        $this->responseFile = $file;
+
+        return $this;
     }
 
-    protected function setResponse($response)
+    protected function setResponseData($data)
     {
-        $this->response = $response;
+        $this->responseData = $data;
 
         return $this;
     }
@@ -35,9 +44,58 @@ trait ResponseTrait
         return $this;
     }
 
-    protected function generateResponse()
+    public function setResponseProvider(Closure $provider)
     {
-        // 
+        $this->responseProvider = $provider;
+
+        return $this;
+    }
+
+    public function setResponseOptions(array $options)
+    {
+        $this->responseOptions = $options;
+
+        return $this;
+    }
+
+    private function getResponseProvider()
+    {
+        if (self::$defaultResponseProvider) {
+            return self::$defaultResponseProvider;
+        }
+
+        if ($this->responseProvider) {
+            return $this->responseProvider;
+        }
+
+        return Closure::fromCallable(function ($blade, $data) {
+            return view($blade, $data);
+        });
+    }
+
+    private function getResponseFile($options)
+    {
+        $file = $this->responseFile;
+        $options = array_merge($this->responseOptions, $options);
+
+        if ($custom = $options['customs'][$file] ?? '') {
+            return $custom;
+        }
+
+        if (!($default = $options['defaults'][$file] ?? '')) {
+            return '';
+        }
+
+        $module = $options['module'] ?? '';
+        return $module . '/' . $default;
+    }
+
+    protected function generateResponse($options = [])
+    {
+        $provider = $this->getResponseProvider();
+        $file = $this->getResponseFile($options);
+
+        return $provider($file, $this->responseData);
     }
 
     protected function generateErrorResponse(int $returnType = self::ERROR_RETURN_JSON)
