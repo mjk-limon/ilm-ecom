@@ -17,7 +17,7 @@ abstract class ResourceController extends Controller
             return $this->app->error($e);
         }
 
-        return $this->app->response('index', '[]', $this->responseOptions());
+        return $this->app->response('index', '[]');
     }
 
     /**
@@ -25,7 +25,7 @@ abstract class ResourceController extends Controller
      */
     public function form()
     {
-        return $this->app->response('form', '[]', $this->responseOptions());
+        return $this->app->response('form', '[]');
     }
 
     /**
@@ -50,24 +50,5 @@ abstract class ResourceController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    /**
-     * Default Response files
-     *
-     * @return array|null
-     */
-    protected function responseOptions(): ?array
-    {
-        $module = $this->moduleName();
-
-        return [
-            'module' => $module,
-            'defaults' => [
-                'index' => 'index',
-                'form' => 'form',
-            ],
-            'customs' => [],
-        ];
     }
 }

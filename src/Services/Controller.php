@@ -22,6 +22,15 @@ abstract class Controller extends BaseController
         protected Air $app
     ) {
         $app->setModuleName($this->moduleName())
-            ->setCachePrefix($this->cacheKey ?: $this->moduleName());
+            ->setCachePrefix($this->cacheKey ?: $this->moduleName())
+            ->setResponseOptions([
+                'module' => $this->moduleName(),
+                'customs' => $this->customResponses(),
+            ]);
+    }
+
+    protected function customResponses(): ?array
+    {
+        return null;
     }
 }

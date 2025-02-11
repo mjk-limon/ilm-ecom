@@ -82,12 +82,11 @@ trait ResponseTrait
             return $custom;
         }
 
-        if (!($default = $options['defaults'][$file] ?? '')) {
-            return '';
-        }
+        $module = isset($options['module']) && !empty($options['module'])
+            ? $options['module'] . '/'
+            : '';
 
-        $module = $options['module'] ?? '';
-        return $module . '/' . $default;
+        return $module . $file;
     }
 
     protected function generateResponse($options = [])
