@@ -32,5 +32,8 @@ it('can test application', function () {
 
 
     $response = $controller->index();
+    $new_cached = Cache::get('87d3cf2fcda098612f21cfc9a4756d4f');
+
     expect($response)->toBeArray();
+    expect($new_cached)->toBeArray();
 });
