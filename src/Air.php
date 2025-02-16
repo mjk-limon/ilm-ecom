@@ -37,7 +37,7 @@ class Air extends IlmComm
         $http = $this->authorizedHttp();
         $this->httpAppendModuleUri($http);
 
-        return $http->{$method}($path, ...$args);
+        return $http->{$method}($path, ...$args)->json();
     }
 
     public function response($file, $data = [])
