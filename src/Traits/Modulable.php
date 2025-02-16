@@ -24,6 +24,13 @@ trait Modulable
         return $this;
     }
 
+    protected function cacheKey(string $path, $query)
+    {
+        $queryString = $query && ! is_string($query) ? http_build_query($query) : strval($query);
+        $key = sprintf('%s_%s_%s', $this->cachePrefix, $path, $queryString);
+        return md5($key);
+    }
+
     protected function httpAppendModuleUri(PendingRequest $http)
     {
         $moduleUri = sprintf(

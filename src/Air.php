@@ -7,7 +7,6 @@ use Ilm\Ecom\Traits\Modulable;
 use Ilm\Ecom\Traits\ResponseTrait;
 
 /**
- * @method \Illuminate\Http\Client\Response get(string $url, $query = null)
  * @method \Illuminate\Http\Client\Response post(string $url, $data = [])
  * @method \Illuminate\Http\Client\Response put(string $url, $data = [])
  * @method \Illuminate\Http\Client\Response delete(string $url, $data = [])
@@ -28,12 +27,23 @@ class Air extends IlmComm
         throw new BadMethodCallException;
     }
 
-    private function request(string $method, string $path, array $args)
+    public function get(string $url, $query = null)
     {
-        if ($cached = $this->cached($method, $path, $args, $this->cachePrefix)) {
+        $cacheKey = $this->cacheKey($url, $query);
+        $cached = $this->cache()->get($cacheKey);
+
+        if ($cached !== null) {
             return $cached;
         }
 
+        $data = $this->request('get', $url, ['query' => $query]);
+        $this->cache()->put($cacheKey, $data);
+
+        return $data;
+    }
+
+    private function request(string $method, string $path, array $args)
+    {
         $http = $this->authorizedHttp();
         $this->httpAppendModuleUri($http);
 
