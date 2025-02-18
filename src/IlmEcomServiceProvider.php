@@ -2,6 +2,8 @@
 
 namespace Ilm\Ecom;
 
+use Illuminate\Routing\Router;
+use Ilm\Ecom\Services\Routing\IlmRouteServiceProvider;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -18,5 +20,12 @@ class IlmEcomServiceProvider extends PackageServiceProvider
         $package
             ->name('ilm-ecom')
             ->hasConfigFile();
+    }
+
+    public function boot()
+    {
+        parent::boot();
+
+        $this->app->register(IlmRouteServiceProvider::class);
     }
 }
