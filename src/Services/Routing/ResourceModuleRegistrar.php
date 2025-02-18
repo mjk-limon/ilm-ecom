@@ -11,7 +11,7 @@ class ResourceModuleRegistrar extends ResourceRegistrar
      *
      * @var string[]
      */
-    protected $resourceDefaults = ['index', 'form', 'upsert', 'show', 'delete'];
+    protected $resourceDefaults = ['index', 'form', 'upsert', 'show', 'destroy'];
 
     /**
      * The verbs used in the resource URIs.

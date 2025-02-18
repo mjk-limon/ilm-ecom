@@ -22,10 +22,8 @@ class IlmEcomServiceProvider extends PackageServiceProvider
             ->hasConfigFile();
     }
 
-    public function boot()
+    public function registeringPackage()
     {
-        parent::boot();
-
         $this->app->register(IlmRouteServiceProvider::class);
     }
 }

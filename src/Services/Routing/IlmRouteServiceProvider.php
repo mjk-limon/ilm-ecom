@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 
 class IlmRouteServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function register()
     {
         Router::macro('resourceModule', function ($name, $controller, array $options = []) {
             /** @var Router $this */
