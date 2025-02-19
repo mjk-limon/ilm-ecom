@@ -23,9 +23,19 @@ abstract class ResourceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function form()
+    public function form(?string $id = null)
     {
-        return $this->app->response('form', '[]');
+        if (!empty($id)) {
+            try {
+                $response = $this->app->get('/show/' . $id);
+            } catch (\Exception $e) {
+                return $this->app->error($e);
+            }
+        } else {
+            $response = [];
+        }
+
+        return $this->app->response('form', $response);
     }
 
     /**
@@ -41,7 +51,13 @@ abstract class ResourceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $response = $this->app->get('/show/' . $id);
+        } catch (\Exception $e) {
+            return $this->app->error($e);
+        }
+
+        return $this->app->response('show', $response);
     }
 
     /**

@@ -47,7 +47,14 @@ class Air extends IlmComm
         $http = $this->authorizedHttp();
         $this->httpAppendModuleUri($http);
 
-        return $http->{$method}($path, ...$args)->json();
+        /** @var \Illuminate\Http\Client\Response $response */
+        $response = $http->{$method}($path, ...$args);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        throw $response->toException();
     }
 
     public function response($file, $data = [])
