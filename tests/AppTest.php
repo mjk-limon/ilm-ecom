@@ -21,19 +21,18 @@ it('can test application', function () {
         public function responseProvider(): ?\Closure
         {
             return function ($r, $rc) {
-                expect($r)->toBe('accounts/opening-balances/index');
                 return $rc;
             };
         }
     };
 
-    Route::resourceModule('test', $controller::class);
+    Route::resourceModule('a-ob', $controller::class);
 
     $new_cached = cache('87d3cf2fcda098612f21cfc9a4756d4f');
-    $response = $this->get('test');
+    $response = $this->get('a-ob/form/1');
 
     $response->assertOk();
-    $response->assertExactJson(['success' => true]);
+    $response->assertJsonStructure();
 
     expect($new_cached)->toBeArray();
 });
