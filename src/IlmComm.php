@@ -38,7 +38,7 @@ abstract class IlmComm
     protected function http()
     {
         if (! $this->http) {
-            $this->http = Http::asMultipart();
+            $this->http = Http::asForm();
 
             if (config('ilm-ecom.sandbox')) {
                 $this->http->withoutVerifying();
