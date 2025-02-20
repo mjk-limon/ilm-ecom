@@ -25,14 +25,12 @@ abstract class ResourceController extends Controller
      */
     public function form(?string $id = null)
     {
-        if (!empty($id)) {
-            try {
-                $response = $this->app->get('/show/' . $id);
-            } catch (\Exception $e) {
-                return $this->app->error($e);
-            }
-        } else {
-            $response = [];
+        try {
+            $response = $this->app->get(
+                $id ? $id . '/edit' : 'create'
+            );
+        } catch (\Exception $e) {
+            return $this->app->error($e);
         }
 
         return $this->app->response('form', $response);
@@ -41,9 +39,22 @@ abstract class ResourceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function upsert(Request $request)
+    public function upsert(Request $request, ?string $id = null)
     {
-        //
+        try {
+            $data = $request->all();
+
+            $response = $id !== null
+                ? $this->app->put($id, $data)
+                : $this->app->post('/', $data);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($e);
+        }
+
+        return redirect()->back()
+            ->with('success', $response);
     }
 
     /**
@@ -65,6 +76,14 @@ abstract class ResourceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $response = $this->app->delete($id);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors($e);
+        }
+
+        return redirect()->back()
+            ->with('success', $response);
     }
 }

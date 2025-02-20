@@ -53,7 +53,7 @@ class ResourceModuleRegistrar extends ResourceRegistrar
      */
     protected function addResourceUpsert($name, $base, $controller, $options)
     {
-        $uri = $this->getResourceUri($name);
+        $uri = $this->getResourceUri($name) . '/{' . $base . '?}';
 
         unset($options['missing']);
 
